@@ -61,6 +61,7 @@
             editando = null;
             resetForm();
             await carregar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else { erro = res.message || 'Erro ao salvar livro'; }
     }
 
@@ -115,7 +116,10 @@
             novaCategoriaNome = '';
             novaCategoriaDescricao = '';
             editandoCategoria = null;
+            mostrarFormCategoria = false;
             if (mostrarForm) form.categoria = res.nome;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { mensagem = ''; }, 3000);
         } else { erro = res.message || 'Erro ao salvar categoria'; }
     }
 
@@ -155,6 +159,9 @@
             novoGeneroNome = '';
             novoGeneroDescricao = '';
             editandoGenero = null;
+            mostrarFormGenero = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { mensagem = ''; }, 3000);
         } else { erro = res.message || 'Erro ao salvar gênero'; }
     }
 
@@ -249,8 +256,6 @@
         <button onclick={() => { mostrarFormCategoria = false; cancelarEdicaoCategoria(); }}
             style="background:#6b7280; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:13px;">Fechar</button>
     </div>
-
-    <!-- Formulário criar/editar -->
     <div style="background:#f9fafb; border-radius:6px; padding:16px; margin-bottom:20px;">
         <h3 style="font-size:14px; font-weight:bold; margin-bottom:12px; color:#7c3aed;">
             {editandoCategoria ? `Editando: ${editandoCategoria.descricao}` : 'Nova Categoria'}
@@ -279,8 +284,6 @@
             {/if}
         </div>
     </div>
-
-    <!-- Lista de categorias -->
     <div>
         <div style="font-size:13px; font-weight:bold; color:#6b7280; margin-bottom:8px;">Categorias cadastradas ({categorias.length})</div>
         <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -488,6 +491,9 @@
         {busca ? 'Nenhum livro encontrado.' : 'Nenhum livro cadastrado ainda.'}
     </div>
 {:else}
+    <div style="font-size:13px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; margin-top:4px; padding-left:4px;">
+        Categorias
+    </div>
     {#each categoriasComLivros as cat}
     {@const livrosCat = livrosDaCategoria(cat.nome)}
     {@const expandida = categoriasExpandidas.has(cat.nome)}
@@ -603,6 +609,3 @@
     </div>
     {/if}
 {/if}
-
-
-

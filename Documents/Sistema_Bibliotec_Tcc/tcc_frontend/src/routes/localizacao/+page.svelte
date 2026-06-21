@@ -177,14 +177,14 @@
         Localização
     </span>
     {#if tela === 'setor' || tela === 'estante'}
-        <span style="color:#6b7280;">›</span>
+        <span style="color:#2563eb;">›</span>
         <span onclick={() => { tela='setor'; estanteSelecionada=null; }}
             style="cursor:{tela === 'estante' ? 'pointer' : 'default'}; color:{tela === 'estante' ? '#2563eb' : '#1f2937'}; font-weight:{tela === 'setor' ? 'bold' : 'normal'}; font-size:{tela === 'setor' ? '24px' : '16px'};">
             {setorSelecionado?.nome}
         </span>
     {/if}
     {#if tela === 'estante'}
-        <span style="color:#6b7280;">›</span>
+        <span style="color:#2563eb;">›</span>
         <span style="color:#1f2937; font-weight:bold; font-size:24px;">{estanteSelecionada?.nome}</span>
     {/if}
 </div>
@@ -198,7 +198,7 @@
         <h2 style="font-size:18px; font-weight:bold;">Setores</h2>
         <button onclick={() => { mostrarFormSetor=true; editandoSetor=null; formSetor={nome:'',descricao:''}; }}
             style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            + Novo Setor
+            Novo Setor
         </button>
     </div>
 
@@ -219,7 +219,7 @@
         </div>
         <div style="margin-top:12px; display:flex; gap:8px;">
             <button onclick={salvarSetor} style="background:#16a34a; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Salvar</button>
-            <button onclick={() => mostrarFormSetor=false} style="background:#6b7280; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
+            <button onclick={() => mostrarFormSetor=false} style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
         </div>
     </div>
     {/if}
@@ -238,11 +238,11 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div>
                     <div style="font-size:18px; font-weight:bold;">{setor.nome}</div>
-                    {#if setor.descricao}<div style="font-size:13px; color:#6b7280; margin-top:2px;">{setor.descricao}</div>{/if}
+                    {#if setor.descricao}<div style="font-size:13px; color:#2563eb; margin-top:2px;">{setor.descricao}</div>{/if}
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:22px; font-weight:bold; color:#2563eb;">{setor.estantes?.length ?? 0}</div>
-                    <div style="font-size:11px; color:#6b7280;">estantes</div>
+                    <div style="font-size:11px; color:#2563eb;">estantes</div>
                 </div>
             </div>
             <div style="margin-top:12px; display:flex; gap:6px;" onclick={(e) => e.stopPropagation()}>
@@ -257,10 +257,10 @@
 <!-- TELA 2: ESTANTES -->
 {:else if tela === 'setor'}
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div style="color:#6b7280; font-size:14px;">{setorSelecionado?.descricao ?? ''}</div>
+        <div style="color:#2563eb; font-size:14px;">{setorSelecionado?.descricao ?? ''}</div>
         <button onclick={() => { mostrarFormEstante=true; editandoEstante=null; formEstante={nome:'',descricao:'',setor_id:''}; }}
             style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            + Nova Estante
+             Nova Estante
         </button>
     </div>
 
@@ -281,7 +281,7 @@
         </div>
         <div style="margin-top:12px; display:flex; gap:8px;">
             <button onclick={salvarEstante} style="background:#16a34a; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Salvar</button>
-            <button onclick={() => mostrarFormEstante=false} style="background:#6b7280; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
+            <button onclick={() => mostrarFormEstante=false} style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
         </div>
     </div>
     {/if}
@@ -299,11 +299,11 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div>
                     <div style="font-size:18px; font-weight:bold;">{estante.nome}</div>
-                    {#if estante.descricao}<div style="font-size:13px; color:#6b7280; margin-top:2px;">{estante.descricao}</div>{/if}
+                    {#if estante.descricao}<div style="font-size:13px; color:#2563eb; margin-top:2px;">{estante.descricao}</div>{/if}
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:22px; font-weight:bold; color:#7c3aed;">{qtdLivros}</div>
-                    <div style="font-size:11px; color:#6b7280;">livros</div>
+                    <div style="font-size:22px; font-weight:bold; color:#2563eb;">{qtdLivros}</div>
+                    <div style="font-size:11px; color:#2563eb;">livros</div>
                 </div>
             </div>
             <div style="margin-top:12px; display:flex; gap:6px;" onclick={(e) => e.stopPropagation()}>
@@ -318,15 +318,15 @@
 <!-- TELA 3: LIVROS DA ESTANTE -->
 {:else if tela === 'estante'}
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div style="color:#6b7280; font-size:14px;">{estanteSelecionada?.descricao ?? ''}</div>
+        <div style="color:#2563eb; font-size:14px;">{estanteSelecionada?.descricao ?? ''}</div>
         <div style="display:flex; gap:8px;">
             <button onclick={() => { mostrarVincular = !mostrarVincular; mostrarFormLivro = false; buscaVincular = ''; }}
-                style="background:#6b7280; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
+                style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
                 Vincular Livro Existente
             </button>
             <button onclick={abrirFormLivro}
                 style="background:#16a34a; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-                + Novo Livro
+                 Novo Livro
             </button>
         </div>
     </div>
@@ -341,7 +341,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px solid #e5e7eb; border-radius:4px; margin-bottom:6px;">
                 <div>
                     <div style="font-weight:bold;">{livro.nome}</div>
-                    <div style="font-size:13px; color:#6b7280;">{livro.autor || '-'} — {livro.categoria}</div>
+                    <div style="font-size:13px; color:#2563eb;">{livro.autor || '-'} — {livro.categoria}</div>
                 </div>
                 <button onclick={() => vincularLivro(livro)}
                     style="background:#2563eb; color:white; border:none; padding:4px 12px; border-radius:4px; cursor:pointer; font-size:13px;">
@@ -350,7 +350,7 @@
             </div>
             {/each}
         {:else if buscaVincular.length > 0}
-            <p style="color:#6b7280; font-size:14px;">Nenhum livro sem estante encontrado.</p>
+            <p style="color:#2563eb; font-size:14px;">Nenhum livro sem estante encontrado.</p>
         {/if}
     </div>
     {/if}
@@ -427,19 +427,19 @@
         </div>
     {:else}
     <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); overflow:hidden;">
-        <div style="padding:16px 20px; background:#f3f0ff; border-left:4px solid #7c3aed; font-weight:bold;">
+        <div style="padding:16px 20px; background:#f3f0ff; border-left:4px solid #2563eb; font-weight:bold;">
             {livrosDaEstanteAtual.length} livro{livrosDaEstanteAtual.length !== 1 ? 's' : ''} nesta estante
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:14px;">
             <thead style="background:#f9fafb;">
                 <tr>
-                    <th style="padding:10px 20px; text-align:left; color:#6b7280;">Título</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Autor</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Categoria</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Qtd</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Disponível</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Status</th>
-                    <th style="padding:10px; text-align:left; color:#6b7280;">Ações</th>
+                    <th style="padding:10px 20px; text-align:left; color:#2563eb;">Título</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Autor</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Categoria</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Qtd</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Disponível</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Status</th>
+                    <th style="padding:10px; text-align:left; color:#2563eb;">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -457,7 +457,7 @@
                     </td>
                     <td style="padding:10px; display:flex; gap:6px;">
                         <button onclick={() => editarLivro(livro)} style="background:#d97706; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Editar</button>
-                        <button onclick={() => desvincularLivro(livro)} style="background:#6b7280; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Desvincular</button>
+                        <button onclick={() => desvincularLivro(livro)} style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Desvincular</button>
                         <button onclick={() => removerLivro(livro.id)} style="background:#dc2626; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Remover</button>
                     </td>
                 </tr>

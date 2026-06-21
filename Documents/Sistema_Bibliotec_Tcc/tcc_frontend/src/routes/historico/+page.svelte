@@ -1,74 +1,74 @@
 ﻿<script>
     import { onMount } from 'svelte';
     import { api } from '$lib/api.js';
-
+ 
     let historico = $state([]);
     let turmas = $state([]);
     let carregando = $state(true);
     let busca = $state('');
     let turmasExpandidas = $state(new Set());
     let tabelaGeralExpandida = $state(true);
-
+ 
     // Filtros de período
     let periodoSelecionado = $state('mes');
     let dataInicio = $state('');
     let dataFim = $state('');
-
+ 
     onMount(async () => { await carregar(); });
-
+ 
     async function carregar() {
         carregando = true;
         [historico, turmas] = await Promise.all([api.getHistorico(), api.getTurmas()]);
         carregando = false;
     }
-
-
+ 
+ 
     async function apagarTodoHistorico() {
         if (!confirm('Apagar TODO o histórico? Esta ação não pode ser desfeita!')) return;
         await api.limparHistorico();
         await carregar();
     }
-
+ 
     async function apagarRegistro(id) {
         if (!confirm('Apagar este registro do histórico?')) return;
         await api.deletarHistorico(id);
         historico = historico.filter(h => h.id !== id);
     }
-
+ 
     function toggleTurma(nome) {
         const novo = new Set(turmasExpandidas);
         novo.has(nome) ? novo.delete(nome) : novo.add(nome);
         turmasExpandidas = novo;
     }
-
+ 
     function duracaoDias(dataEmprestimo, dataDevolucao) {
         return Math.floor((new Date(dataDevolucao) - new Date(dataEmprestimo)) / (1000 * 60 * 60 * 24));
     }
-
+ 
     function diasAtraso(dataPrevista, dataDevolucao) {
         const atraso = Math.floor((new Date(dataDevolucao) - new Date(dataPrevista)) / (1000 * 60 * 60 * 24));
         return atraso > 0 ? atraso : 0;
     }
-
+ 
     function inicioDoMes() {
         const d = new Date();
         return new Date(d.getFullYear(), d.getMonth(), 1);
     }
-
+ 
     function inicioDaSemana() {
         const d = new Date();
         const dia = d.getDay();
         const diff = d.getDate() - dia + (dia === 0 ? -6 : 1);
         return new Date(d.setDate(diff));
     }
-
+ 
     let filtradosPorPeriodo = $derived(() => {
         const hoje = new Date();
         hoje.setHours(23, 59, 59, 999);
-
+ 
         let inicio = null;
         let fim = hoje;
-
+ 
         if (periodoSelecionado === 'hoje') {
             inicio = new Date();
             inicio.setHours(0, 0, 0, 0);
@@ -83,7 +83,7 @@
             fim = dataFim ? new Date(dataFim) : hoje;
             fim.setHours(23, 59, 59, 999);
         }
-
+ 
         return historico.filter(h => {
             const dataDev = new Date(h.data_devolucao);
             if (inicio && dataDev < inicio) return false;
@@ -91,20 +91,20 @@
             return true;
         });
     });
-
+ 
     let filtrados = $derived(filtradosPorPeriodo().filter(h =>
         h.aluno?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
         h.aluno?.turma?.toLowerCase().includes(busca.toLowerCase()) ||
         h.livro?.nome?.toLowerCase().includes(busca.toLowerCase())
     ));
-
+ 
     // Estatísticas
     let stats = $derived(() => {
         const base = filtradosPorPeriodo();
         if (base.length === 0) return null;
-
+ 
         const atrasados = base.filter(h => new Date(h.data_devolucao) > new Date(h.data_prevista_devolucao));
-
+ 
         // Livro mais emprestado
         const contagemLivros = {};
         for (const h of base) {
@@ -112,7 +112,7 @@
             contagemLivros[nome] = (contagemLivros[nome] ?? 0) + 1;
         }
         const livroTop = Object.entries(contagemLivros).sort((a, b) => b[1] - a[1])[0];
-
+ 
         // Membro mais ativo
         const contagemMembros = {};
         for (const h of base) {
@@ -120,7 +120,7 @@
             contagemMembros[nome] = (contagemMembros[nome] ?? 0) + 1;
         }
         const membroTop = Object.entries(contagemMembros).sort((a, b) => b[1] - a[1])[0];
-
+ 
         return {
             total: base.length,
             atrasados: atrasados.length,
@@ -129,7 +129,7 @@
             membroTop: membroTop ? { nome: membroTop[0], qtd: membroTop[1] } : null,
         };
     });
-
+ 
     let historicoPorTurma = $derived(() => {
         const grupos = {};
         for (const t of turmas) {
@@ -141,7 +141,7 @@
         return grupos;
     });
 </script>
-
+ 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div style="display:flex; align-items:center; gap:12px;">
         <a href="/" style="background:#e5e7eb; color:#1f2937; padding:6px 12px; border-radius:4px; text-decoration:none; font-size:14px;">← Voltar</a>
@@ -155,7 +155,7 @@
         Limpar histórico
     </button>
 </div>
-
+ 
 <!-- Filtros de período -->
 <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
     <span style="font-weight:bold; font-size:14px; color:#374151;">Período:</span>
@@ -175,7 +175,7 @@
     </div>
     {/if}
 </div>
-
+ 
 <!-- Estatísticas -->
 {#if stats()}
 {@const s = stats()}
@@ -198,14 +198,14 @@
     </div>
 </div>
 {/if}
-
+ 
 <input bind:value={busca} placeholder="Pesquisar por membro, turma ou livro..."
     style="width:100%; border:1px solid #d1d5db; border-radius:4px; padding:8px; box-sizing:border-box; margin-bottom:16px;" />
-
+ 
 {#if carregando}
     <p>Carregando...</p>
 {:else}
-
+ 
 <!-- Tabela geral colapsável -->
 <div style="border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; margin-bottom:16px;">
     <div onclick={() => tabelaGeralExpandida = !tabelaGeralExpandida}
@@ -277,10 +277,28 @@
     {/if}
     {/if}
 </div>
-
+ 
 <!-- Histórico por Turma (expansível) -->
 <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:24px;">
-    <h2 style="font-size:18px; font-weight:bold; margin-bottom:16px;">Histórico por Turma</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:18px; font-weight:bold;">Histórico por Turma</h2>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button onclick={() => turmasExpandidas = new Set(Object.keys(historicoPorTurma()))}
+                style="padding:5px 12px; border-radius:4px; border:1px solid #2563eb; background:#2563eb; color:white; cursor:pointer; font-size:12px;">
+                Expandir todas
+            </button>
+            <button onclick={() => turmasExpandidas = new Set()}
+                style="padding:5px 12px; border-radius:4px; border:1px solid #6b7280; background:white; color:#374151; cursor:pointer; font-size:12px;">
+                Recolher todas
+            </button>
+            {#each Object.keys(historicoPorTurma()) as nomeTurma}
+            <button onclick={() => toggleTurma(nomeTurma)}
+                style="padding:5px 12px; border-radius:4px; border:1px solid {turmasExpandidas.has(nomeTurma) ? '#7c3aed' : '#d1d5db'}; background:{turmasExpandidas.has(nomeTurma) ? '#7c3aed' : 'white'}; color:{turmasExpandidas.has(nomeTurma) ? 'white' : '#374151'}; cursor:pointer; font-size:12px;">
+                {nomeTurma}
+            </button>
+            {/each}
+        </div>
+    </div>
     {#if Object.keys(historicoPorTurma()).length === 0}
         <div style="padding:24px; text-align:center; color:#6b7280;">Nenhuma devolução neste período.</div>
     {:else}

@@ -83,7 +83,7 @@
         return g;
     });
 
-    // Se há busca, expandir todos
+    //  expandir todos
     $effect(() => {
         if (busca.length > 0) {
             turmasExpandidas = new Set([...Object.keys(grupos()), 'Sem turma']);
@@ -108,19 +108,19 @@
 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:20px;">
     <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:16px; border-left:4px solid #2563eb;">
         <div style="font-size:28px; font-weight:bold; color:#2563eb;">{stats.total}</div>
-        <div style="font-size:13px; color:#6b7280; margin-top:2px;">Total de membros</div>
+        <div style="font-size:13px; color:#2563eb; margin-top:2px;">Total de membros</div>
     </div>
     <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:16px; border-left:4px solid #16a34a;">
         <div style="font-size:28px; font-weight:bold; color:#16a34a;">{stats.emDia}</div>
-        <div style="font-size:13px; color:#6b7280; margin-top:2px;">Em dia</div>
+        <div style="font-size:13px; color:#16a34a; margin-top:2px;">Em dia</div>
     </div>
     <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:16px; border-left:4px solid #d97706;">
         <div style="font-size:28px; font-weight:bold; color:#d97706;">{stats.comLivro}</div>
-        <div style="font-size:13px; color:#6b7280; margin-top:2px;">Com livro emprestado</div>
+        <div style="font-size:13px; color:#d97706; margin-top:2px;">Com livro emprestado</div>
     </div>
     <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:16px; border-left:4px solid #dc2626;">
         <div style="font-size:28px; font-weight:bold; color:#dc2626;">{stats.inadimplentes}</div>
-        <div style="font-size:13px; color:#6b7280; margin-top:2px;">Inadimplentes</div>
+        <div style="font-size:13px; color:#dc2626; margin-top:2px;">Inadimplentes</div>
     </div>
 </div>
 {/if}
@@ -168,7 +168,7 @@
     </div>
     <div style="margin-top:16px; display:flex; gap:8px;">
         <button onclick={salvar} style="background:#16a34a; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Salvar</button>
-        <button onclick={() => mostrarForm = false} style="background:#6b7280; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
+        <button onclick={() => mostrarForm = false} style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Cancelar</button>
     </div>
 </div>
 {/if}

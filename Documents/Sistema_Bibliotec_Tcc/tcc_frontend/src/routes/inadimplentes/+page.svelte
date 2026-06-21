@@ -7,7 +7,8 @@
     let carregando = $state(true);
     let busca = $state('');
     let turmasExpandidas = $state(new Set());
-    let tabelaGeralExpandida = $state(false);
+    let tabelaGeralExpandida = $state(true);
+    let ordenacao = $state('atraso_desc');
  
     onMount(async () => { await carregar(); });
  
@@ -15,6 +16,14 @@
         carregando = true;
         [inadimplentes, turmas] = await Promise.all([api.getInadimplentes(), api.getTurmas()]);
         carregando = false;
+    }
+ 
+    async function devolver(emprestimo_id) {
+        if (confirm('Confirmar devolução?')) {
+            const { api: apiMod } = await import('$lib/api.js');
+            await apiMod.devolver({ emprestimo_id });
+            await carregar();
+        }
     }
  
     function toggleTurma(nome) {
@@ -27,11 +36,22 @@
         return Math.floor((new Date() - new Date(dataPrevista)) / (1000 * 60 * 60 * 24));
     }
  
-    let filtrados = $derived(inadimplentes.filter(i =>
-        i.aluno?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-        i.aluno?.turma?.toLowerCase().includes(busca.toLowerCase()) ||
-        i.livro?.nome?.toLowerCase().includes(busca.toLowerCase())
-    ));
+    let filtrados = $derived(() => {
+        const base = inadimplentes.filter(i =>
+            i.aluno?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+            i.aluno?.turma?.toLowerCase().includes(busca.toLowerCase()) ||
+            i.livro?.nome?.toLowerCase().includes(busca.toLowerCase())
+        );
+        return base.sort((a, b) => {
+            const diasA = Math.floor((new Date() - new Date(a.data_prevista_devolucao)) / 86400000);
+            const diasB = Math.floor((new Date() - new Date(b.data_prevista_devolucao)) / 86400000);
+            if (ordenacao === 'atraso_desc') return diasB - diasA;
+            if (ordenacao === 'atraso_asc') return diasA - diasB;
+            if (ordenacao === 'nome') return (a.aluno?.nome ?? '').localeCompare(b.aluno?.nome ?? '');
+            if (ordenacao === 'turma') return (a.aluno?.turma ?? '').localeCompare(b.aluno?.turma ?? '');
+            return 0;
+        });
+    });
  
     let inadimplentesPorTurma = $derived(() => {
         const grupos = {};
@@ -55,8 +75,19 @@
     </span>
 </div>
  
-<input bind:value={busca} placeholder="Pesquisar por membro, turma ou livro..."
-    style="width:100%; border:1px solid #d1d5db; border-radius:4px; padding:8px; box-sizing:border-box; margin-bottom:16px;" />
+<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
+    <input bind:value={busca} placeholder="Pesquisar por membro, turma ou livro..."
+        style="flex:1; min-width:200px; border:1px solid #d1d5db; border-radius:4px; padding:8px; box-sizing:border-box;" />
+    <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:13px; color:#6b7280; white-space:nowrap;">Ordenar:</span>
+        {#each [['atraso_desc','Maior atraso'],['atraso_asc','Menor atraso'],['nome','Nome'],['turma','Turma']] as [val, label]}
+        <button onclick={() => ordenacao = val}
+            style="padding:5px 10px; border-radius:4px; border:1px solid {ordenacao === val ? '#dc2626' : '#d1d5db'}; background:{ordenacao === val ? '#dc2626' : 'white'}; color:{ordenacao === val ? 'white' : '#374151'}; cursor:pointer; font-size:12px;">
+            {label}
+        </button>
+        {/each}
+    </div>
+</div>
  
 {#if carregando}
     <p>Carregando...</p>
@@ -69,7 +100,7 @@
         <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-weight:bold; font-size:16px;">Todos os Inadimplentes</span>
             <span style="background:#dc2626; color:white; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:bold;">
-                {filtrados.length} {filtrados.length === 1 ? 'registro' : 'registros'}
+                {filtrados().length} {filtrados.length === 1 ? 'registro' : 'registros'}
             </span>
         </div>
         <span style="font-size:18px; color:#6b7280;">{tabelaGeralExpandida ? '▲' : '▼'}</span>
@@ -89,10 +120,11 @@
                     <th style="padding:12px; text-align:left;">Livro</th>
                     <th style="padding:12px; text-align:left;">Devolver até</th>
                     <th style="padding:12px; text-align:left;">Atraso</th>
+                    <th style="padding:12px; text-align:left;">Ação</th>
                 </tr>
             </thead>
             <tbody>
-                {#each filtrados as i}
+                {#each filtrados() as i}
                 {@const dias = diasAtraso(i.data_prevista_devolucao)}
                 <tr style="border-bottom:1px solid #fee2e2; background:#fff5f5;">
                     <td style="padding:12px; font-weight:bold;">{i.aluno?.nome}</td>
@@ -108,6 +140,12 @@
                         <span style="background:#dc2626; color:white; padding:2px 10px; border-radius:999px; font-size:13px; font-weight:bold;">
                             {dias} {dias === 1 ? 'dia' : 'dias'}
                         </span>
+                    </td>
+                    <td style="padding:12px;">
+                        <button onclick={() => devolver(i.id)}
+                            style="background:#d97706; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:12px;">
+                            Devolver
+                        </button>
                     </td>
                 </tr>
                 {/each}

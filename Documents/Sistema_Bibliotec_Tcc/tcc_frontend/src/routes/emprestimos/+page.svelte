@@ -16,6 +16,7 @@
     let mensagem = $state('');
     let erro = $state('');
     let turmasExpandidas = $state(new Set());
+    let modoBusca = $state('titulo');
 
     onMount(async () => { await carregar(); });
 
@@ -77,8 +78,9 @@
     );
 
     let emprestimosFiltrados = $derived(emprestimos.filter(e =>
-        e.livro?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-        e.aluno?.nome?.toLowerCase().includes(busca.toLowerCase())
+        modoBusca === 'titulo'
+            ? e.livro?.nome?.toLowerCase().includes(busca.toLowerCase())
+            : e.aluno?.nome?.toLowerCase().includes(busca.toLowerCase())
     ));
 
     let emprestimosPorTurma = $derived(() => {
@@ -174,10 +176,21 @@
     </div>
 
     <!-- Empréstimos Ativos -->
-    <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:24px;">
-        <h2 style="font-size:18px; font-weight:bold; margin-bottom:16px;">Empréstimos Ativos</h2>
-        <input bind:value={busca} placeholder="Pesquisar..."
+    <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:24px; display:flex; flex-direction:column;">
+        <h2 style="font-size:18px; font-weight:bold; margin-bottom:12px;">Empréstimos Ativos</h2>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <button onclick={() => modoBusca = 'titulo'}
+                style="padding:5px 12px; border-radius:4px; border:1px solid {modoBusca === 'titulo' ? '#2563eb' : '#d1d5db'}; background:{modoBusca === 'titulo' ? '#2563eb' : 'white'}; color:{modoBusca === 'titulo' ? 'white' : '#374151'}; cursor:pointer; font-size:13px;">
+                Por Título
+            </button>
+            <button onclick={() => modoBusca = 'aluno'}
+                style="padding:5px 12px; border-radius:4px; border:1px solid {modoBusca === 'aluno' ? '#2563eb' : '#d1d5db'}; background:{modoBusca === 'aluno' ? '#2563eb' : 'white'}; color:{modoBusca === 'aluno' ? 'white' : '#374151'}; cursor:pointer; font-size:13px;">
+                Por Aluno
+            </button>
+        </div>
+        <input bind:value={busca} placeholder={modoBusca === 'titulo' ? 'Pesquisar por título do livro...' : 'Pesquisar por nome do aluno...'}
             style="width:100%; border:1px solid #d1d5db; border-radius:4px; padding:8px; box-sizing:border-box; margin-bottom:12px;" />
+        <div style="overflow-y:auto; max-height:400px;">
         {#if carregando}
             <p>Carregando...</p>
         {:else if emprestimosFiltrados.length === 0}
@@ -198,6 +211,7 @@
             </div>
             {/each}
         {/if}
+        </div>
     </div>
 </div>
 

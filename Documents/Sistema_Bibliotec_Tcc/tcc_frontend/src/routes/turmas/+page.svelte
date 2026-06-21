@@ -128,7 +128,7 @@
             style="border:1px solid #d1d5db; border-radius:4px; padding:8px; width:60%; box-sizing:border-box;" />
         <button onclick={() => { mostrarForm = true; editando = null; form = { nome: '', descricao: '' }; }}
             style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            + Nova Turma
+            Nova Turma
         </button>
     </div>
  
@@ -221,7 +221,7 @@
             style="border:1px solid #d1d5db; border-radius:4px; padding:8px; width:300px; box-sizing:border-box;" />
         <button onclick={abrirFormMembro}
             style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
-            + Novo Membro
+            Novo Membro
         </button>
     </div>
  
@@ -268,7 +268,7 @@
         <p>Carregando...</p>
     {:else if membrosOrdenados.length === 0}
         <div style="background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:48px; text-align:center; color:#6b7280;">
-            {busca ? 'Nenhum membro encontrado.' : 'Nenhum membro nesta turma. Clique em "+ Novo Membro" para adicionar.'}
+            {busca ? 'Nenhum membro encontrado.' : 'Nenhum membro nesta turma. Clique em " Novo Membro" para adicionar.'}
         </div>
     {:else}
     <div style="background:white; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
